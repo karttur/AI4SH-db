@@ -24,7 +24,7 @@ The _samples_ schema is linked to the schema for _users_ (for registering the pe
 - in-situ methods to apply (table _pilots.pilot_insitu_methods_),and
 - point id (table _pilots.samplepoint_) that links to both the site and the pilot.
 
-Starting each sampling event the responsible person must enter the basic metadata on "whodunit" in the table _sample_event_ - this should generate a universally unique id (UUID) for this sampling event, that is then registered with each of the in-situ methods, and the associated DB schema, as the sampling and analysis progresses.
+Starting each sampling event the responsible person must enter the basic metadata on "whodunit" in the table _sample_event_ - this should generate a universally unique id (UUID) for this sampling event (_sampleuuid_), that is then registered with each of the in-situ methods as the sampling and analysis progresses.
 
 Each sample point consists of 5 (five) excavation pits - one central and one in each main geographic direction:
 

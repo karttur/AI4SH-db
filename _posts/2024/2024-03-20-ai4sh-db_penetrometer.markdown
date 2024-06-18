@@ -40,6 +40,7 @@ Table samples.sample_event {
   siteid UUID [pk]
 }
 
+// topsoil (true) represents 0-20 cm, subsoil (false) represents 20-50 cm.
 
 ```
 

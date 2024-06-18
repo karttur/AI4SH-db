@@ -116,11 +116,13 @@ Table samples.sample_event {
 
 Table moulder {
   sampleuuid UUID [pk]
+  topsoil Boolean [pk]
   sampler UUID
   app_version_moulder BOOLEAN
   aggregate_stability_index float
   description TEXT
 }
+// topsoil (true) represents 0-20 cm, subsoil (false) represents 20-50 cm.
 
 REF: samples.sample_event.sampleuuid - moulder.sampleuuid
 REF: users.user.userid - moulder.sampler

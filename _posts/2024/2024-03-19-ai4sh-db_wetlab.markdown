@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "Schema: wet-chemistry"
+title: "Schema: wetlab"
 categories: ai4sh-db
-excerpt: "AI4SH schema wet-chemisty laboratory data"
+excerpt: "AI4SH schema wetlab laboratory data"
 tags:
   - db
   - setup
@@ -14,11 +14,10 @@ comments: true
 share: true
 
 ---
-# UNDER CONSTRUCTION
-
 
 ## Outline
 
+The schema _wetlab_ ... The schema is modelled after the [Open Soil Spectral Library (OSSL)]() data for laboratoy ... OSSL include the European LUCAS data and the default defined standard methods included in the schema _wetlab_ is a repliation of this data.
 
 ### DBML
 
@@ -37,9 +36,11 @@ Table users.user {
 
 Table samples.sample_event {
   sampleuuid UUID
-  siteid UUID [pk]
 }
 
+Table analysismethod{
+
+}
 
 ```
 

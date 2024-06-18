@@ -12,14 +12,11 @@ date: '2024-03-14 11:27'
 modified: '2024-03-20'
 comments: true
 share: true
-
 ---
 
 ## Outline
 
 The schema _microbiometer_ only contains a single table, for recording the results of the [Microbiometer<sup>TM</sup>](https://microbiometer.com) soil sampling kit.
-
-The soil sampling, including extraction method, depth, classification, photos etc are recorded in the schema _samples_. The landscape (above ground) characteristics and the cultivation methods and its history are covered in the _sites_ schema.
 
 ## Microbiometer
 
@@ -52,12 +49,14 @@ Table samples.sample_event {
 
 Table microbiometer {
   sampleuuid UUID [pk]
+  topsoil Boolean [pk]
   sampler UUID
   bacteria_ratio float
   fungi_ratio float
   extra_reagent_required BOOLEAN [DEFAULT false]
   description TEXT
 }
+// topsoil (true) represents 0-20 cm, subsoil (false) represents 20-50 cm.
 
 REF: samples.sample_event.sampleuuid - microbiometer.sampleuuid
 REF: users.user.userid - microbiometer.sampler

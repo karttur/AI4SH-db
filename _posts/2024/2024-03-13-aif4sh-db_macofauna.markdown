@@ -135,9 +135,13 @@ Table taxonomic_level {
 // taxonomic_levels alternatives:  Species, Genus, Family, Order, Class, Phylum, Kingdom, Domain
 
 REF: samples.sample_event.sampleuuid - sampling_technique.sampleuuid
+
 REF: users.user.userid - sampling_technique.sampler
+
 REF: sampling_technique.sampleuuid - observation_litter_layer.sampleuuid
+
 REF: sampling_technique.sampleuuid - observation_organic_layer.sampleuuid
+
 REF: sampling_technique.sampleuuid - observation_topsoil_layer.sampleuuid
 
 Ref: sampling_technique.extraction_method - extraction_method.extraction_method
