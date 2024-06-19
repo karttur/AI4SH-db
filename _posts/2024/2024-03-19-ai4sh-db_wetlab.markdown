@@ -38,11 +38,11 @@ LUCAS module 1 Physico-chemical quantitative properties and analysis methods inc
 | Sand | sand | % | - | sand.tot_usda.c60_w.pct |
 | pH CaCl<sub>2</sub> | pH-CaCl<sub>2</sub>  | index | 10390:2005 | ph.cacl2_usda.a481_index |
 | pH H<sub>2</sub>O | pH-H<sub>2</sub>O | index | 10390:2005 | ph.h2o_usda.a268_index |
-| Organic carbon | OC | g kg<sup>2</sup> | 10694:1995 | oc_usda.c729_w.pct |
-| Total nitrogen | Ntot | g kg<sup>2</sup> | 11261:1995 | n.tot_usda.a623_w.pct |
-| Phosphorus content | Pext  | g kg<sup>2</sup> | 11263:1194 | p.ext_usda.a274_mg.kg |
-| Potassium  | Kext | g kg<sup>2</sup> | USDA−NRCS | k.ext_usda.a725_cmolc.kg |
-| Cation Exchange Capacity | CEC | cmol(+) kg<sup>2</sup> | 11260:1994 | cec_usda.a723_cmolc.kg |
+| Organic carbon | OC | g kg<sup>-1</sup> | 10694:1995 | oc_usda.c729_w.pct |
+| Total nitrogen | Ntot | g kg<sup>-1</sup> | 11261:1995 | n.tot_usda.a623_w.pct |
+| Phosphorus content | Pext  | g kg<sup>-1</sup> | 11263:1194 | p.ext_usda.a274_mg.kg |
+| Potassium  | Kext | g kg<sup>-1</sup> | USDA−NRCS | k.ext_usda.a725_cmolc.kg |
+| Cation Exchange Capacity | CEC | cmol(+) kg<sup>-1</sup> | 11260:1994 | cec_usda.a723_cmolc.kg |
 | Electical conductivity | EC | mS m<sup>-1</sup>  | 11265:1994 | ec_usda.a364_ds.m |
 
 All properties that are to be laboratory analysed must be listed in the table _labanalysismethod_. The default methods to apply are the 13 physico-chemical methods listed in LUCAS module 1 (above).
