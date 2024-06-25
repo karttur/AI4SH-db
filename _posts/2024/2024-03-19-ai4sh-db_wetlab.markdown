@@ -85,6 +85,7 @@ TABLE labanalysismeta {
   laboratorieuuid UUID [pk]
   sampleuuid UUID [pk]
   topsoil Boolean [pk]
+  analysisdate date
   useruuid UUID
   labanalysisuuid UUID
 }
