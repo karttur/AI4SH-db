@@ -24,9 +24,9 @@ eDNA is a method for estimating biodiversity and the occurrence of both differen
 - Archaea, and
 - Eukarya.
 
-In addition the following Eukarya taxa (subgroups) will be analysed:
-- Fungus (yeasts, molds and mushrooms subgroup),
-- Protists (polyphyletic subgroup,
+The following Eukarya taxa (subgroups) will be analysed:
+- Fungus (yeasts, moulds and mushrooms subgroup),
+- Protists (polyphyletic subgroup),
 - Tardigrade (micro animal subgroup),
 - Naematode (roundworm subgroup),
 - Arthropod (exoskeleton clad animal subgroup),
@@ -58,7 +58,7 @@ The tables of the schema _edna_ follows the principles of the [schema _wetlab_](
 
 The sample to analyse is always the mixed sample from each sample event, where either only the topsoil (0-20 cm) or both the topsoil and subsoil (20-50 cm) are analysed. If both are analysed, two metadata records (table _ednaanalysismeta_) must be created for the same sample. The metadata should also include the name and contact of the (certified/centralised) eDNA laboratory that analysed the sample. The schema thus also contains a table for registering the laboratories used by AI4SH (_laboratory_).
 
-Because the eDNA registered both taxa ("form") and guild ("function"), there are two separate support tables that list the possible forms (table: _taxa_) and functions (table: _guild_) to register. These must be filled beforehand by the specialists responsible. Only entries recorded in the support tables will then be allowed in the two tables holding the final analysis results, _taxaheterogenity_ and _guildabundance_.
+Because the eDNA analysis includes both taxa ("form") and guild ("function"), there are two separate support tables that list the possible forms (table: _taxa_) and functions (table: _guild_) to register. These must be filled beforehand by the specialists responsible. Only entries recorded in the support tables will then be allowed in the two tables holding the final analysis results, _taxaheterogenity_ and _guildabundance_.
 
 The method applied for the identification of taxa and guilds, metabarcoding, include a number of steps once the sample is received by the laboratory:
 - extraction,
