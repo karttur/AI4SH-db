@@ -51,32 +51,36 @@ Fungal predicited functions:
 - saprotrophs, and
 - plant pathogens.
 
-In addition the overall community dissimilarity will be recorded (as a metadata as it does not reveal any taxa or function).
+Note that most of the listed eDNA attributes above require customised pipelines for the metabarcoding. This causes the meatabarcoding pipeline to be linked to the results instead of the sample (i.e. several pipelines will be applied to each sample).
+
+In addition the overall community dissimilarity will be recorded as a metadata (as it does not reveal any taxa or function).
 
 ## Outline
 
 The tables of the schema _edna_ follows the principles of the [schema _wetlab_](../ai4sh-db_wetlab).
 
-The sample to analyse is always the mixed sample from each sample event, where either only the topsoil (0-20 cm) or both the topsoil and subsoil (20-50 cm) are analysed. If both are analysed, two metadata records (table _ednaanalysismeta_) must be created for the same sample. The metadata should also include the name and contact of the (certified/centralised) eDNA laboratory that analysed the sample, all the individual methods in the process pipeline of the metabarcoding and the archive and accession code/id for the original sequence data.
+The sample to analyse is always the mixed sample from each sample event, where either only the topsoil (0-20 cm) or both the topsoil and subsoil (20-50 cm) are analysed. If both are analysed, two metadata records (table _ednaanalysismeta_) must be created for the same sample. The metadata should also include the name and contact of the (certified/centralised) eDNA laboratory that analysed the sample, and the archive and accession code/id for the original sequence data.
 
-The schema thus also contains tables for registering the laboratories used by AI4SH (_laboratory_), the metabarcoding method pipeline (_metabarcodingpipeline_) and the nucleotide sequence archives (_nucleotidesequencearchive_) where the full sequence data are stored.
+The schema thus also contains tables for registering the laboratories used by AI4SH (_laboratory_) and the nucleotide sequence archives (_nucleotidesequencearchive_) where the full sequence data are stored.
 
 Because the eDNA analysis includes both taxa ("form") and function, there are two separate support tables that list the possible forms (table: _taxa_) and functions (table: _function_) to register. These must be filled beforehand by the specialists responsible. Only entries recorded in the support tables will then be allowed in the two tables holding the final analysis results, _taxaheterogenity_ and _functionabundance_. Each entry into the support tables (_taxa_ and _function_) must also record the status of each entry - revealing if it is Compulsory (C), Recommended (R), Optional(O), Experimental(E) or Pending(P).
 
-The steps forming the metabarcoding pipeline include:
+As stated above, the methods composing the metabarcoding pipeline differs dependent on taxa and functions. Each unique combination of methods building up a pipeline must be registered in the table _metabarcodingpipeline_.
+
+The generic steps forming the metabarcoding pipeline include:
 - extraction,
 - amplification,
 - purification,
 - sequencing, and
 - bioinformatic treatment.
 
-The last step, bioinformatic treatment, requires a database against which the identified sequences are compared and the taxa/functions identified. The method steps above and the database employed all influence the identified taxa, and should be registered with each analysis. In the schema _edna_ this is done in the table _metabarcodingpipeline_. Each combination of the five (5) process step plus the nucleotide library used must be registered. When registering, the combination is given a UUID that must then follow each sample where this precise pipeline is applied. If one process (or the nucleotide library) is changed, a new UUID must be registered and linked to the samples using this alternative (updated) chain of process methods. It is possible to analyse the same sample using two different pipelines (e.g. just running the same sequence against an updated version of the nucleotide library).
+The last step, bioinformatic treatment, requires a database against which the identified sequences are compared and the taxa/functions identified. The method steps above and the database employed all influence the identified taxa, and should be registered with each analysis result. Each combination of the five (5) process step plus the nucleotide library used must be registered. When registering, the combination is given a UUID that must then follow each result (taxa and function) where this precise pipeline is applied. If one process (or the nucleotide library) is changed, a new UUID must be registered and linked to the result using this alternative (updated) chain of process methods. It is possible to analyse the same sample using two different pipelines (e.g. by just running the same sequence against an updated version of the nucleotide library) and then register two different results. Thus it is also possible to compare the results of employing 2 different pipelines, e.g. for evaluating different methods.
 
-As the transport and storage of soil samples to be analysis for eDNA are influencing the results, there is a special table for registering the sample logistics at the laboratory side (_samplelogistics_). The handling associated with the field sampling side is recorded in the schema _samples_.
+As the transport and storage of soil samples influence the results, there is a special table for registering the sample logistics at the laboratory side of the logistics chain (_samplelogistics_). The handling associated with the field sampling side is recorded in the schema _samples_.
 
 ## Idea and objective
 
-Both the taxa (along with richness and Shannon's diversity) and the functions are to some extent arbitrarily selected and defined. To allow other taxa and functions to be added, the schema _edna_ is built up around support tables for _taxa_ and _functions_. As stated above, the main table for recording biodiversity, _taxaheterogenity_, and functios, _functionabundance_, can only be inserted with taxa and functions defined in the support tables. This ensures that all added records are consistent while also allowing for novel taxa and functions to be added.
+Both the taxa (along with richness and Shannon's diversity) and the functions are to some extent arbitrarily selected and defined. To allow other taxa and functions to be added, the schema _edna_ is built up around support tables for _taxa_ and _functions_. As stated above, the main table for recording biodiversity, _taxaheterogenity_, and functions, _functionabundance_, can only be inserted with taxa and functions defined in the support tables. This ensures that all added records are consistent while also allowing for novel taxa and functions to be added.
 
 ### DBML
 
@@ -95,7 +99,6 @@ Table users.user {
 
 Table samples.sample_event {
   sampleuuid UUID
-  siteid UUID [pk]
 }
 
 Table samplelogistics {
@@ -114,7 +117,7 @@ Table metabarcodingpipeline {
   sequencing TEXT [pk]
   sequencereferencelibrary TEXT [pk]
   bioinformatictreamentment TEXT [pk]
-  ednamethoduuid UUID
+  ednapipelineuuid UUID
 }
 
 TABLE nucleotidesequencearchive {
@@ -127,7 +130,6 @@ TABLE nucleotidesequencearchive {
 // AI4SH will primarily use
 
 TABLE ednaanalysismeta {
-  ednamethoduuid UUID [pk]
   laboratorieuuid UUID [pk]
   sampleuuid UUID [pk]
   topsoil Boolean [pk]
@@ -160,6 +162,7 @@ Table status {
 
 TABLE taxaheterogenity {
   labanalysisuuid UUID [pk]
+  ednapipelineuuid UUID [pk]
   taxa TEXT [pk]
   richness REAL
   shannon REAL
@@ -176,6 +179,7 @@ Table function {
 
 TABLE functionabundance {
   labanalysisuuid UUID [pk]
+  ednapipelineuuid UUID [pk]
   functiontaxa TEXT [pk]
   abundance REAL
 }
@@ -203,8 +207,6 @@ Ref: "public"."ednaanalysismeta"."labanalysisuuid" - "public"."taxaheterogenity"
 
 Ref: "public"."ednaanalysismeta"."labanalysisuuid" - "public"."functionabundance"."labanalysisuuid"
 
-Ref: "public"."metabarcodingpipeline"."ednamethoduuid" - "public"."ednaanalysismeta"."ednamethoduuid"
-
 Ref: "public"."nucleotidesequencearchive"."nucleotidesequencearchive" - "public"."ednaanalysismeta"."nucleotidesequencearchive"
 
 Ref: "public"."function"."statuscode" - "public"."taxa"."statuscode"
@@ -212,6 +214,10 @@ Ref: "public"."function"."statuscode" - "public"."taxa"."statuscode"
 Ref: "public"."taxa"."statuscode" - "public"."status"."statuscode"
 
 Ref: "public"."samplelogistics"."sampleuuid" - "samples"."sample_event"."sampleuuid"
+
+Ref: "public"."metabarcodingpipeline"."ednapipelineuuid" - "public"."taxaheterogenity"."ednapipelineuuid"
+
+Ref: "public"."metabarcodingpipeline"."ednapipelineuuid" - "public"."functionabundance"."ednapipelineuuid"
 ```
 
 ### Figure
