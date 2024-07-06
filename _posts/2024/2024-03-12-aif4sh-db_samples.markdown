@@ -24,7 +24,7 @@ The _samples_ schema is linked to the schema for _users_ (for registering the pe
 - in-situ methods to apply (table _pilots.pilot_insitu_methods_),and
 - point id (table _pilots.samplepoint_) that links to both the site and the pilot.
 
-Starting each sampling event the responsible person must enter the basic metadata on "whodunit" in the table _sample_event_ - this should generate a universally unique id (UUID) for this sampling event (_sampleuuid_), that is then registered with each of the in-situ methods as the sampling and analysis progresses.
+Starting each sampling event the responsible person must enter the basic metadata on "whodunit" in the table _sample_event_ - this should generate a unique SERIAL (integer) id for this sampling event (_sampleid_), that is then registered with each of the in-situ methods as the sampling and analysis progresses.
 
 Each sample point consists of 5 (five) excavation pits - one central and one in each main geographic direction:
 
@@ -39,9 +39,9 @@ In the schema, the sampler should register which of these 5 pits (sub-points) wh
 
 The objective of the the _samples_ schema is to hold the basic information on each sample event per sample point. It is in a way the intermediate link between the schema _sites_ holding information related to the sample points (sites and pilots) and the in-situ analysis results derived from the different methods - where each method results are registered in a separate schema.
 
-As with other schemas and tables in this proposed database, each sample event is registered with i) the user (UUID) who is performing this particular sampling, and ii) the sample point (UUID) where it is happening. When registering the sampling event, it is given its own Universally Unique id (UUID). The sampling event UUID is then used as the link to the analysis results.
+As with other schemas and tables in this proposed database, each sample event is registered with i) the user (userid) who is performing this particular sampling, and ii) the sample point (poinid) where it is happening. When registering the sampling event, it is given its own sampleid. The sampling event id is then used as the link to the analysis results.
 
-Via the sample point UUID, linking to the site UUID and the pilot UUID, the type of in-situ observations to be done should be known - this should be registered as a boolean list allowing the sampler to tick off the observations and sampling required.
+Via the sample point id (pointid), linking to the site id (siteid) and the pilot id (pilotid), the type of in-situ observations to be done should be known - this should be registered as a boolean list allowing the sampler to tick off the observations and sampling required.
 
 The schema is built up after the field and sampling protocols developed with AI4SH.
 
@@ -57,11 +57,11 @@ Project project_name {
 }
 
 Table users.user {
-  userid UUID
+  userid INTEGER
 }
 
 Table pilots.pilot_insitu_methods {
-  pilotid UUID [pk]
+  siteid INTEGER [pk]
   wet_chemistry BOOLEAN
   eDNA BOOLEAN
   macrofauna_full BOOLEAN
@@ -80,20 +80,19 @@ Table pilots.pilot_insitu_methods {
 }
 
 Table pilots.site {
- siteid UUID
- pilotid UUID [pk]
+ siteid INTEGER [pk]
 }
 
 Table pilots.samplepoint {
-  pointid UUID
-  siteid UUID [pk]
+  pointid INTEGER
+  siteid INTEGER [pk]
 }
 
 Table sample_event {
- pointid UUID [pk]
+ pointid INTEGER [pk]
  sampledatetime timestamp [pk]
- sampleuuid UUID
- sampleruuid UUID
+ sampleid SERIAL
+ userid INTEGER
  soil_class_code char[5]
  description TEXT
 }
@@ -105,7 +104,7 @@ Table soil_class {
 }
 
 Table sample_photo {
- sampleuuid UUID [pk]
+ sampleid INTEGER [pk]
  profile_photo TEXT
  towards_N_photo TEXT
  towards_E_photo TEXT
@@ -114,7 +113,7 @@ Table sample_photo {
 }
 
 Table sampling {
-  sampleuuid UUID [pk]
+  sampleid INTEGER [pk]
   soil_moisture_percent SMALLINT
   soil_moisture_nominal varchar(8)
   topsoil_subsample_C BOOLEAN
@@ -149,7 +148,7 @@ Table soil_excavation_tool {
 // It should be filled automatically when the sample_event is creates.
 // But then allow the sampler (user) to add or remove methods applied
 Table insitu_methods {
-  sampleuuid UUID [pk]
+  sampleid INTEGER [pk]
   wet_chemistry BOOLEAN
   eDNA BOOLEAN
   macrofauna_full BOOLEAN
@@ -167,25 +166,25 @@ Table insitu_methods {
   ise_pH BOOLEAN
 }
 
-Ref: "users"."user"."userid" - "public"."sample_event"."sampleruuid"
+Ref: "users"."user"."userid" - "public"."sample_event"."userid"
 
-Ref: "public"."sample_event"."sampleuuid" - "public"."sampling"."sampleuuid"
+Ref: "public"."sample_event"."sampleid" - "public"."sampling"."sampleid"
 
 Ref: "public"."sample_event"."soil_class_code" - "public"."soil_class"."soil_class_code"
 
 Ref: "public"."sampling"."soil_excavation_tool" - "public"."soil_excavation_tool"."soil_excavation_tool"
 
-Ref: "public"."sample_event"."sampleuuid" - "public"."sample_photo"."sampleuuid"
+Ref: "public"."sample_event"."sampleid" - "public"."sample_photo"."sampleid"
 
 Ref: "public"."sampling"."soil_moisture_nominal" - "public"."soil_moisture_nominal"."soil_moisture_nominal"
 
-Ref: "public"."sample_event"."sampleuuid" - "public"."insitu_methods"."sampleuuid"
+Ref: "public"."sample_event"."sampleid" - "public"."insitu_methods"."sampleid"
 
 Ref: "public"."sample_event"."pointid" - "pilots"."samplepoint"."pointid"
 
 Ref: "pilots"."samplepoint"."siteid" - "pilots"."site"."siteid"
 
-Ref: "pilots"."site"."pilotid" - "pilots"."pilot_insitu_methods"."pilotid"
+Ref: "pilots"."site"."siteid" - "pilots"."pilot_insitu_methods"."siteid"
 
 Ref: "pilots"."pilot_insitu_methods"."wet_chemistry" - "public"."insitu_methods"."wet_chemistry"
 

@@ -51,7 +51,7 @@ The table _methodtransfer_ is a support table for linking the ISO coded methods 
 
 The sample to analyse is always the mixed sample from each sample event, where either only the topsoil (0-20 cm) or both the topsoil and subsoil (20-50 cm) are analysed. If both are analysed, two metadata records (table _labanalysismeta_) must be created for the same sample. The metadata should also include the name and contact of the (certified/centralised) laboratory that analysed the sample. The schema thus also contains a table for registering the laboratories used by AI4SH (_laboratory_).
 
-The actual laboratory results, for quantities and units as defined in the table _labanalysismethod_, are registered in the table _labanalysisresults_. As the analysis actually done varies for each pilot/site/sample point, the table is built up for registering single analysis results against the _analysismeta_ (lined using the common field _labanalysisuuid_).
+The actual laboratory results, for quantities and units as defined in the table _labanalysismethod_, are registered in the table _labanalysisresults_. As the analysis actually done varies for each pilot/site/sample point, the table is built up for registering single analysis results against the _analysismeta_ (lined using the common field _labanalysisid_).
 
 ### DBML
 
@@ -65,11 +65,11 @@ Project project_name {
 }
 
 Table users.user {
-  userid UUID
+  userid SERIAL
 }
 
 Table samples.sample_event {
-  sampleuuid UUID
+  sampleid SERIAL
 }
 
 Table labanalysismethod {
@@ -82,17 +82,17 @@ Table labanalysismethod {
 // default is True for the LUCAS module 1 13 physico-chemical properties, and false for all other quantitites.
 
 TABLE labanalysismeta {
-  laboratorieuuid UUID [pk]
-  sampleuuid UUID [pk]
+  laboratorieid INTEGER [pk]
+  sampleid INTEGER [pk]
   topsoil Boolean [pk]
   analysisdate date
-  useruuid UUID
-  labanalysisuuid UUID
+  userid INTEGER
+  labanalysisid SERIAL
 }
 // topsoil (true) represents 0-20 cm, subsoil (false) represents 20-50 cm.
 
 TABLE labanalysisresults {
-  labanalysisuuid UUID
+  labanalysisid INTEGER
   quantity TEXT
   value REAL
 }
@@ -103,7 +103,7 @@ Table laboratory {
   labcountry char(2)
   laburl TEXT
   labcontact TEXT
-  laboratorieuuid UUID
+  laboratorieid SERIAL
 }
 
 Table methodtransfer {
@@ -113,13 +113,13 @@ Table methodtransfer {
   offset REAL [DEFAULT: 0]
 }
 
-Ref: "public"."laboratory"."laboratorieuuid" - "public"."labanalysismeta"."laboratorieuuid"
+Ref: "public"."laboratory"."laboratorieid" - "public"."labanalysismeta"."laboratorieid"
 
-Ref: "samples"."sample_event"."sampleuuid" - "public"."labanalysismeta"."sampleuuid"
+Ref: "samples"."sample_event"."sampleid" - "public"."labanalysismeta"."sampleid"
 
-Ref: "users"."user"."userid" - "public"."labanalysismeta"."useruuid"
+Ref: "users"."user"."userid" - "public"."labanalysismeta"."userid"
 
-Ref: "public"."labanalysismeta"."labanalysisuuid" < "public"."labanalysisresults"."labanalysisuuid"
+Ref: "public"."labanalysismeta"."labanalysisid" < "public"."labanalysisresults"."labanalysisid"
 
 Ref: "public"."labanalysismethod"."isocode" - "public"."methodtransfer"."isocode"
 

@@ -39,18 +39,18 @@ Project project_name {
 }
 
 Table users.user {
-  userid UUID
+  userid SERIAL
 }
 
 Table samples.sample_event {
-  sampleuuid UUID
-  siteid UUID [pk]
+  sampleid SERIAL
+  siteid INTEGER [pk]
 }
 
 Table microbiometer {
-  sampleuuid UUID [pk]
+  sampleid INTEGER [pk]
   topsoil Boolean [pk]
-  sampler UUID
+  userid INTEGER
   bacteria_ratio float
   fungi_ratio float
   extra_reagent_required BOOLEAN [DEFAULT false]
@@ -58,8 +58,8 @@ Table microbiometer {
 }
 // topsoil (true) represents 0-20 cm, subsoil (false) represents 20-50 cm.
 
-REF: samples.sample_event.sampleuuid - microbiometer.sampleuuid
-REF: users.user.userid - microbiometer.sampler
+REF: samples.sample_event.sampleid - microbiometer.sampleid
+REF: users.user.userid - microbiometer.userid
 
 ```
 

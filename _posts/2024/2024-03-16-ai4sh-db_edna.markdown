@@ -74,7 +74,7 @@ The generic steps forming the metabarcoding pipeline include:
 - sequencing, and
 - bioinformatic treatment.
 
-The last step, bioinformatic treatment, requires a database against which the identified sequences are compared and the taxa/functions identified. The method steps above and the database employed all influence the identified taxa, and should be registered with each analysis result. Each combination of the five (5) process step plus the nucleotide library used must be registered. When registering, the combination is given a UUID that must then follow each result (taxa and function) where this precise pipeline is applied. If one process (or the nucleotide library) is changed, a new UUID must be registered and linked to the result using this alternative (updated) chain of process methods. It is possible to analyse the same sample using two different pipelines (e.g. by just running the same sequence against an updated version of the nucleotide library) and then register two different results. Thus it is also possible to compare the results of employing 2 different pipelines, e.g. for evaluating different methods.
+The last step, bioinformatic treatment, requires a database against which the identified sequences are compared and the taxa/functions identified. The method steps above and the database employed all influence the identified taxa, and should be registered with each analysis result. Each combination of the five (5) process step plus the nucleotide library used must be registered. When registering, the combination is given a unique SERIAL id (INTEGER) that must then follow each result (taxa and function) where this precise pipeline is applied. If one process (or the nucleotide library) is changed, a new SERIAL id must be registered and linked to the result using this alternative (updated) chain of process methods. It is possible to analyse the same sample using two different pipelines (e.g. by just running the same sequence against an updated version of the nucleotide library) and then register two different results. Thus it is also possible to compare the results of employing 2 different pipelines, e.g. for evaluating different methods.
 
 As the transport and storage of soil samples influence the results, there is a special table for registering the sample logistics at the laboratory side of the logistics chain (_samplelogistics_). The handling associated with the field sampling side is recorded in the schema _samples_.
 
@@ -94,15 +94,15 @@ Project project_name {
 }
 
 Table users.user {
-  userid UUID
+  userid SERIAL
 }
 
 Table samples.sample_event {
-  sampleuuid UUID
+  sampleid SERIAL
 }
 
 Table samplelogistics {
-  sampleuuid UUID
+  sampleid INTEGER
   preservation TEXT
   transport TEXT
   transportduration SMALLINT
@@ -117,7 +117,7 @@ Table metabarcodingpipeline {
   sequencing TEXT [pk]
   sequencereferencelibrary TEXT [pk]
   bioinformatictreamentment TEXT [pk]
-  ednapipelineuuid UUID
+  ednapipelineid INTEGER
 }
 
 TABLE nucleotidesequencearchive {
@@ -125,21 +125,21 @@ TABLE nucleotidesequencearchive {
   proprietor TEXT [pk]
   databaseurl TEXT [pk]
   info TEXT
-  nucleotidesequencearchive UUID
+  nucleotidesequencearchive SERIAL
 }
 // AI4SH will primarily use
 
 TABLE ednaanalysismeta {
-  laboratorieuuid UUID [pk]
-  sampleuuid UUID [pk]
+  laboratorieid INTEGER [pk]
+  sampleid INTEGER [pk]
   topsoil Boolean [pk]
   analysisdate date
   bioinformatictreatmentdate date
-  useruuid UUID
-  nucleotidesequencearchive UUID
+  userid INTEGER
+  nucleotidesequencearchive INTEGER
   accessionid TEXT
   accessionurl TEXT
-  labanalysisuuid UUID
+  labanalysisid INTEGER
   dissimilarity REAL
 }
 // topsoil (true) represents 0-20 cm, subsoil (false) represents 20-50 cm.
@@ -161,8 +161,8 @@ Table status {
 // C:Compulsary; R:Recommended; O:Optional; E:Experimental;
 
 TABLE taxaheterogenity {
-  labanalysisuuid UUID [pk]
-  ednapipelineuuid UUID [pk]
+  labanalysisid INTEGER [pk]
+  ednapipelineid INTEGER [pk]
   taxa TEXT [pk]
   richness REAL
   shannon REAL
@@ -178,8 +178,8 @@ Table function {
 // support table with drop down alternatives for function to add
 
 TABLE functionabundance {
-  labanalysisuuid UUID [pk]
-  ednapipelineuuid UUID [pk]
+  labanalysisid INTEGER [pk]
+  ednapipelineid INTEGER [pk]
   functiontaxa TEXT [pk]
   abundance REAL
 }
@@ -190,22 +190,22 @@ Table laboratory {
   labcountry char(2)
   laburl TEXT
   labcontact TEXT
-  laboratorieuuid UUID
+  laboratorieid SERIAL
 }
 
-Ref: "public"."laboratory"."laboratorieuuid" - "public"."ednaanalysismeta"."laboratorieuuid"
+Ref: "public"."laboratory"."laboratorieid" - "public"."ednaanalysismeta"."laboratorieid"
 
-Ref: "samples"."sample_event"."sampleuuid" - "public"."ednaanalysismeta"."sampleuuid"
+Ref: "samples"."sample_event"."sampleid" - "public"."ednaanalysismeta"."sampleid"
 
-Ref: "users"."user"."userid" - "public"."ednaanalysismeta"."useruuid"
+Ref: "users"."user"."userid" - "public"."ednaanalysismeta"."userid"
 
 Ref: "public"."taxa"."taxa" - "public"."taxaheterogenity"."taxa"
 
 Ref: "public"."function"."functiontaxa" - "public"."functionabundance"."functiontaxa"
 
-Ref: "public"."ednaanalysismeta"."labanalysisuuid" - "public"."taxaheterogenity"."labanalysisuuid"
+Ref: "public"."ednaanalysismeta"."labanalysisid" - "public"."taxaheterogenity"."labanalysisid"
 
-Ref: "public"."ednaanalysismeta"."labanalysisuuid" - "public"."functionabundance"."labanalysisuuid"
+Ref: "public"."ednaanalysismeta"."labanalysisid" - "public"."functionabundance"."labanalysisid"
 
 Ref: "public"."nucleotidesequencearchive"."nucleotidesequencearchive" - "public"."ednaanalysismeta"."nucleotidesequencearchive"
 
@@ -213,11 +213,11 @@ Ref: "public"."function"."statuscode" - "public"."taxa"."statuscode"
 
 Ref: "public"."taxa"."statuscode" - "public"."status"."statuscode"
 
-Ref: "public"."samplelogistics"."sampleuuid" - "samples"."sample_event"."sampleuuid"
+Ref: "public"."samplelogistics"."sampleid" - "samples"."sample_event"."sampleid"
 
-Ref: "public"."metabarcodingpipeline"."ednapipelineuuid" - "public"."taxaheterogenity"."ednapipelineuuid"
+Ref: "public"."metabarcodingpipeline"."ednapipelineid" - "public"."taxaheterogenity"."ednapipelineid"
 
-Ref: "public"."metabarcodingpipeline"."ednapipelineuuid" - "public"."functionabundance"."ednapipelineuuid"
+Ref: "public"."metabarcodingpipeline"."ednapipelineid" - "public"."functionabundance"."ednapipelineid"
 ```
 
 ### Figure

@@ -32,14 +32,14 @@ A unique feature of the spectral sampling is that it can be done in the field, a
 
 Further, spectral scanning is a rapid procedure and it is common to do repeated scans for a single sample, and each scan of the same sample is given a sequential number in the field _scanrepeat_. The in-field scanning (_prepcode_ = _NO_) can also be done at either a single pit (i.e. the central position) or including the perimeter pits in North, West, South and East. In the table _scanmeta_ this is encoded in the field _subsample_ using a single letter (M, C, N, E, S, W for Mixed, Central, North, East, South and West) The many options for spectral scanning leads to a metadata table with a large number of primary keys (pk):
 
-- spectrometeruuid (the sensor)
-- sampleuuid (the sample event)
+- spectrometerid (the sensor)
+- sampleid (the sample event)
 - topsoil (topsoil or subsoil)
 - subsample (Mixed, Central, North, East, South or West)
 - scanrepeat (sequence from 1 to maximum 9)
 - prepcode (NO [none], MX [mixed] or DS [dried & sieved])
 
-The actual spectral data, i.e. the soil diffuse reflectance expressed as a fraction between 0 and 1 for each wavelength, is saved in the table _reflectancescan_. The link between _scanmeta_ and _reflectancescan_ is a UUID set for each individual scan (scanuuid). The link to the spectrometer is also via a UUID (spectromteruuid). As for other schemas, the user responsible for the scanning is linked to each scan via the useruuid.
+The actual spectral data, i.e. the soil diffuse reflectance expressed as a fraction between 0 and 1 for each wavelength, is saved in the table _reflectancescan_. The link between _scanmeta_ and _reflectancescan_ is a unique (SERIAL) id set for each individual scan (scanid). The link to the spectrometer is also via a unique SERIAL id (spectrometerid). As for other schemas, the user responsible for the scanning is linked to each scan via the userid.
 
 ### DBML
 
@@ -48,11 +48,11 @@ The actual spectral data, i.e. the soil diffuse reflectance expressed as a fract
 // Docs: https://dbml.dbdiagram.io/docs
 
 Table users.user {
-  userid UUID
+  userid SERIAL
 }
 
 Table samples.sample_event {
-  sampleuuid UUID
+  sampleid SERIAL
 }
 
 Table spectrometer {
@@ -60,18 +60,18 @@ Table spectrometer {
   model TEXT [pk]
   serialnumber TEXT [pk]
   wavelenghts REAL[]
-  spectrometeruuid UUID
+  spectrometerid SERIAL
 }
 
 TABLE scanmeta {
-  spectrometeruuid UUID [pk]
-  sampleuuid UUID [pk]
+  spectrometerid INTEGER [pk]
+  sampleid INTEGER [pk]
   topsoil Boolean [pk]
   subsample char(1) [pk]
   scanrepeat char(1) [pk]
   prepcode CHAR(2) [pk]
-  useruuid UUID
-  scanuuid UUID
+  userid INTEGER
+  scanid SERIAL
   nafreq REAL
   negfreq REAL
   extfreq REAL
@@ -81,7 +81,7 @@ TABLE scanmeta {
 // scanrepeat is a simple numbering starting a 1 to a maximum 0f 9 repeats for the same sample
 
 TABLE reflectancescan {
-  scanuuid UUID
+  scanid INTEGER
   signalmean REAL[]
   signalstd REAL[]  
 }
@@ -94,13 +94,13 @@ TABLE spectraprep {
 }
 // spectraprep alternatives: "NO", "MX", "DS"
 
-REF: samples.sample_event.sampleuuid - scanmeta.sampleuuid
+REF: samples.sample_event.sampleid - scanmeta.sampleid
 
-REF: users.user.userid - scanmeta.useruuid
+REF: users.user.userid - scanmeta.userid
 
-REF: scanmeta.scanuuid - reflectancescan.scanuuid
+REF: scanmeta.scanid - reflectancescan.scanid
 
-Ref: "public"."spectrometer"."spectrometeruuid" < "public"."scanmeta"."spectrometeruuid"
+Ref: "public"."spectrometer"."spectrometerid" < "public"."scanmeta"."spectrometerid"
 
 Ref: "public"."spectraprep"."prepcode" < "public"."scanmeta"."prepcode"
 ```

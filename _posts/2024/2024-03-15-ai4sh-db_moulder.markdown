@@ -106,26 +106,26 @@ Project project_name {
 }
 
 Table users.user {
-  userid UUID
+  userid SERIAL
 }
 
 Table samples.sample_event {
-  sampleuuid UUID
-  siteid UUID [pk]
+  sampleid SERIAL
+  siteid INTEGER [pk]
 }
 
 Table moulder {
-  sampleuuid UUID [pk]
+  sampleid INTEGER [pk]
   topsoil Boolean [pk]
-  sampler UUID
+  userid INTEGER
   app_version_moulder BOOLEAN
   aggregate_stability_index float
   description TEXT
 }
 // topsoil (true) represents 0-20 cm, subsoil (false) represents 20-50 cm.
 
-REF: samples.sample_event.sampleuuid - moulder.sampleuuid
-REF: users.user.userid - moulder.sampler
+REF: samples.sample_event.sampleid - moulder.sampleid
+REF: users.user.userid - moulder.userid
 ```
 
 ### Figure

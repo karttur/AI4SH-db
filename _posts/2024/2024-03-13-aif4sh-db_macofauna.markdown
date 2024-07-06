@@ -31,9 +31,9 @@ To accommodate the taxa from the different layers, the schema includes three rep
 - observation_organic_layer
 - observation_topsoil_layer
 
-Each table contain columns for _taxa_, _life_cycle_stage_code_, _n_specimen_ (number of specimens) and _g_total_ (total weight of taxa in grams), and the _sampleuuid_ (linking to the sample event and further up the chain to the sample point).
+Each table contain columns for _taxa_, _life_cycle_stage_code_, _n_specimen_ (number of specimens) and _g_total_ (total weight of taxa in grams), and the _sampleid_ (linking to the sample event and further up the chain to the sample point).
 
-The landscape (above ground) characteristics and the cultivation methods and its history are covered in the _sites_ schema. These are linked to the schema _macrofauna_ where each record inherits the sample universally unique id (UUID) from the schema _samples_. The analyser of the macrofauna must be registered separately, again by linking to the _users_ schema.
+The landscape (above ground) characteristics and the cultivation methods and its history are covered in the _sites_ schema. These are linked to the schema _macrofauna_ where each record inherits the sample id (sampleid) from the schema _samples_. The analyser of the macrofauna must be registered separately, again by linking to the _users_ schema.
 
 ## Idea and objective
 
@@ -59,17 +59,17 @@ Project project_name {
 }
 
 Table users.user {
-  userid UUID
+  userid SERIAL
 }
 
 Table samples.sample_event {
-  sampleuuid UUID
-  siteid UUID [pk]
+  sampleid SERIAL
+  siteid INTEGER [pk]
 }
 
 Table sampling_technique {
-  sampleuuid UUID [pk]
-  sampler UUID
+  sampleid INTEGER [pk]
+  userid INTEGER
   sample_dim_cm_x smallint [default: 25]
   sample_dim_cm_y smallint [default: 25]
   sample_dim_cm_z smallint [default: 30]
@@ -85,7 +85,7 @@ Table extraction_method {
 // extraction_method alternatives: "hand_sorting", "mustard_oil", "mustard_powder"
 
 Table observation_litter_layer {
-  sampleuuid UUID [pk]
+  sampleid INTEGER [pk]
   taxa TEXT [pk]
   life_cycle_stage_code char[1] [pk]
   n_specimen smallint
@@ -93,7 +93,7 @@ Table observation_litter_layer {
 }
 
 Table observation_organic_layer {
-  sampleuuid UUID [pk]
+  sampleid INTEGER [pk]
   taxa TEXT [pk]
   life_cycle_stage_code char[1] [pk]
   n_specimen smallint
@@ -101,7 +101,7 @@ Table observation_organic_layer {
 }
 
 Table observation_topsoil_layer {
-  sampleuuid UUID [pk]
+  sampleid INTEGER [pk]
   taxa TEXT [pk]
   life_cycle_stage_code char[1] [pk]
   n_specimen smallint
@@ -135,15 +135,15 @@ Table taxonomic_level {
 }
 // taxonomic_levels alternatives:  Species, Genus, Family, Order, Class, Phylum, Kingdom, Domain
 
-REF: samples.sample_event.sampleuuid - sampling_technique.sampleuuid
+REF: samples.sample_event.sampleid - sampling_technique.sampleid
 
-REF: users.user.userid - sampling_technique.sampler
+REF: users.user.userid - sampling_technique.userid
 
-REF: sampling_technique.sampleuuid - observation_litter_layer.sampleuuid
+REF: sampling_technique.sampleid - observation_litter_layer.sampleid
 
-REF: sampling_technique.sampleuuid - observation_organic_layer.sampleuuid
+REF: sampling_technique.sampleid - observation_organic_layer.sampleid
 
-REF: sampling_technique.sampleuuid - observation_topsoil_layer.sampleuuid
+REF: sampling_technique.sampleid - observation_topsoil_layer.sampleid
 
 Ref: sampling_technique.extraction_method - extraction_method.extraction_method
 

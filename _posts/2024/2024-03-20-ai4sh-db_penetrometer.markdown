@@ -42,13 +42,13 @@ As with spectrometers, each individual penetrometer has a slightly different res
 
 The meta data for each penetrometer observation is stored in the table _probemeta_. The table is prepared for accepting multiple observations for the each single sample (field: _proberepeat_). Observations can be done either in the field or using mixed (wet) samples, this is recorded in the field _subsample_  with a single letter (M, C, N, E, S, W for Mixed, Central, North, East, South and West). The alterantive options for peneteromter observations leads to a metadata table with a large number of primary keys (pk):
 
-- penetrometeruuid (the probe)
-- sampleuuid (the sample event)
+- penetrometerid (the probe)
+- sampleid (the sample event)
 - topsoil (topsoil or subsoil)
 - subsample (Mixed, Central, North, East, South or West)
 - scanrepeat (sequence from 1 to maximum 9)
 
-The actual observation data is saved in the table _penetrometerobs_. The link between _probemeta_ and _penetrometerobs_ is a UUID set for each individual observation (obsuuid). The link to the penetrometer is also via a UUID (penetrometeruuid). As for other schemas, the user responsible is linked to each observation via the useruuid.  
+The actual observation data is saved in the table _penetrometerobs_. The link between _probemeta_ and _penetrometerobs_ is a unique (SERIAL) id set for each individual observation (obsid). The link to the penetrometer is also via a SERIAL id (penetrometerid). As for other schemas, the user responsible is linked to each observation via the userid.  
 
 ### DBML
 
@@ -62,18 +62,18 @@ Project project_name {
 }
 
 Table users.user {
-  userid UUID
+  userid SERIAL
 }
 
 Table samples.sample_event {
-  sampleuuid UUID
+  sampleid SERIAL
 }
 
 Table penetrometer {
   brand TEXT [pk]
   model TEXT [pk]
   serialnumber TEXT [pk]
-  penetrometeruuid UUID
+  penetrometerid SERIAL
 }
 
 Table penetrometertypes {
@@ -84,46 +84,46 @@ Table penetrometertypes {
 }
 
 Table penetrometercalib {
-  penetrometeruuid UUID [pk]
+  penetrometerid INTEGER [pk]
   quantity TEXT [pk]
   gain REAL [DEFAULT: 1]
   offset REAL [DEFAULT: 0]
 }
 
 TABLE probemeta {
-  penetrometeruuid UUID [pk]
-  sampleuuid UUID [pk]
+  penetrometerid INTEGER [pk]
+  sampleid INTEGER [pk]
   topsoil Boolean [pk]
   subsample char(1) [pk]
   proberepeat char(1) [pk]
-  useruuid UUID
-  obsuuid UUID
+  userid INTEGER
+  obsid SERIAL
 }
 // topsoil (true) represents 0-20 cm, subsoil (false) represents 20-50 cm.
 // subsample can be M (mixed), C (central), N (north), E (east), S (south) of W (west).
 // proberepeat is a simple numbering starting a 1 to a maximum 0f 9 repeats for the same sample
 
 TABLE penetrometerobs {
-  obsuuid UUID [pk]
+  obsid INTEGER [pk]
   quantity TEXT [pk]
   obsmean REAL[]
   obsstd REAL[]  
 }
 
-REF: samples.sample_event.sampleuuid - probemeta.sampleuuid
+REF: samples.sample_event.sampleid - probemeta.sampleid
 
-REF: users.user.userid - probemeta.useruuid
+REF: users.user.userid - probemeta.userid
 
 
-REF: "public"."penetrometer"."penetrometeruuid" - "public"."probemeta"."penetrometeruuid"
+REF: "public"."penetrometer"."penetrometerid" - "public"."probemeta"."penetrometerid"
 
 REF: "public"."penetrometertypes"."brand" - "public"."penetrometer"."brand"
 
 REF: "public"."penetrometertypes"."model" - "public"."penetrometer"."model"
 
-REF: "public"."penetrometer"."penetrometeruuid" - "public"."penetrometercalib"."penetrometeruuid"
+REF: "public"."penetrometer"."penetrometerid" - "public"."penetrometercalib"."penetrometerid"
 
-Ref: "public"."probemeta"."obsuuid" - "public"."penetrometerobs"."obsuuid"
+Ref: "public"."probemeta"."obsid" - "public"."penetrometerobs"."obsid"
 ```
 
 ### Figure

@@ -21,7 +21,7 @@ The schema _users_ is only schematic, indicating its existence; registered users
 
 ## Idea and objective
 
-The idea is that all the researchers, field workers and laboratory staff etc., involved should register as _users_ and get assigned a Universally Unique id (UUID). For each entry in the database the person who did the work and is responsible (which can differ) should then be inserted using the UUID as link.
+The idea is that all the researchers, field workers and laboratory staff etc., involved should register as _users_ and get assigned a unique id. The unique id is assigned using the postgreSQL data type SERIAL - an automatically incremented integer number with each added database record. For each entry in the database the person who did the work and is responsible (which can differ) should then be inserted using the userid as link.
 
 ### DBML
 
@@ -35,7 +35,7 @@ Project project_name {
 }
 
 Table user {
-  userid UUID
+  userid SERIAL
   firstname TEXT [pk]
   middlename TEXT [pk]
   lastname TEXT [pk]

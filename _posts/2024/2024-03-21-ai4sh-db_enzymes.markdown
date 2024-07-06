@@ -19,7 +19,7 @@ share: true
 
 The schema _enzymes_ contains tables for recorded enzymatic activity using the [Soil Enzyme Activity Reader (SEAR)](https://www.digit-soil.com/webinar-registration) developed by [Digit-Soil AG](https://www.digit-soil.com). Each read records the activity of 5 different enzymes, with 5 replicas of each enzyme???
 
-The schema _enzymes_ is built along the same principles as the other schemas for laboratory derived soil properties, [wetlab](../ai4sh-db_wetlab/) and [edna](../ai4sh-db_edna/). The sampleid and userid are derived from other schemas and registered together with other metadata for each SEAR analysis in the table _eeameta_. Each SEAR analysis is given a Universal Unique ID (UUID), that is then used for linking to the results (table: _eea_) and quality (table: _eeaquality_.)
+The schema _enzymes_ is built along the same principles as the other schemas for laboratory derived soil properties, [wetlab](../ai4sh-db_wetlab/) and [edna](../ai4sh-db_edna/). The sampleid and userid are derived from other schemas and registered together with other metadata for each SEAR analysis in the table _eeameta_. Each SEAR analysis is given a uique (SERIAL) id, that is then used for linking to the results (table: _eea_) and quality (table: _eeaquality_.)
 
 The actual SEAR results are thus stored in the table _eea_, with each individual enzyme in a separate record. The enzyme is registered using a 3 letter code, expanded in the support table _enzymecode_.
 
@@ -35,20 +35,20 @@ Project project_name {
 }
 
 Table users.user {
-  userid UUID
+  userid SERIAL
 }
 
 Table samples.sample_event {
-  sampleuuid UUID
+  sampleid SERIAL
 }
 
 Table eeameta {
-  sampleuuid UUID [pk]
+  sampleid INTEGER [pk]
   topsoil Boolean [pk]
   storageconditions TEXT
   analysisdate date
-  useruuid UUID
-  eeaanalysisuuid UUID  
+  userid INTEGER
+  eeaanalysisid SERIAL  
 }
 
 Table enzymecode {
@@ -58,7 +58,7 @@ Table enzymecode {
 }
 
 Table eea {
-  eeaanalysisuuid UUID [pk]
+  eeaanalysisid INTEGER [pk]
   enzymecode char(3) [pk]
   measurement_pmol_min real
   is_valid Boolean
@@ -66,7 +66,7 @@ Table eea {
 }
 
 Table eeaquality {
-  sampleuuid UUID [pk]
+  sampleid INTEGER [pk]
   enzymecode char(3) [pk]
   rejected_technical_replicates_fraction REAL
   standard_deviation REAL
@@ -74,17 +74,17 @@ Table eeaquality {
   adjusted_r2 REAL  
 }
 
-Ref: "samples"."sample_event"."sampleuuid" - "public"."eeameta"."sampleuuid"
+Ref: "samples"."sample_event"."sampleid" - "public"."eeameta"."sampleid"
 
-Ref: "users"."user"."userid" - "public"."eeameta"."useruuid"
+Ref: "users"."user"."userid" - "public"."eeameta"."userid"
 
-Ref: "public"."eeameta"."eeaanalysisuuid" - "public"."eea"."eeaanalysisuuid"
+Ref: "public"."eeameta"."eeaanalysisid" - "public"."eea"."eeaanalysisid"
 
 Ref: "public"."enzymecode"."enzymecode" - "public"."eea"."enzymecode"
 
 Ref: "public"."eeaquality"."enzymecode" - "public"."enzymecode"."enzymecode"
 
-Ref: "public"."eeaquality"."sampleuuid" - "public"."eeameta"."sampleuuid"
+Ref: "public"."eeaquality"."sampleid" - "public"."eeameta"."sampleid"
 ```
 
 ### Figure
