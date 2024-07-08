@@ -17,7 +17,7 @@ share: true
 
 ## Outline
 
-The schema _sites_ is intended for registering the AI4SH pilot, sites and sample points. To cover the different types of pilots within AI4SH, three hierarchical levels are suggested:
+The schema _sites_ is intended for registering the AI4SH pilots, sites and sample points. Note that the schema can also be used registering additional (unofficial AI4SH) pilots, sites and sample points. To cover the different types of pilots, three hierarchical levels are suggested:
 
 1. _pilot_ (whether a single or multiple location(s)) (grand parent),
 2. _site_ (contiguous sampling area with multiple sample point, whether field[s] or farm[s]) (parent), and
@@ -97,6 +97,7 @@ Table pilot {
   pilot_area ST_Area
   description TEXT
   url TEXT
+  ai4shpilot BOOLEAN
 }
 
 Table site {
