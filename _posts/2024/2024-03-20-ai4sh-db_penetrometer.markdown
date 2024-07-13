@@ -9,7 +9,7 @@ tags:
   - schema
 image: ts-mdsl-rntwi_RNTWI_id_2001-2016_AS
 date: '2024-03-20 11:27'
-modified: '2024-06-03'
+modified: '2024-07-13'
 comments: true
 share: true
 
@@ -36,11 +36,11 @@ The soil properties that can be observed with the AI4SH adopted soil penetromete
 - potassium  (K), and
 - pH.
 
-A main reason for applying soil penetrometers as part of AI4SH is that soil moisture is a required parameters for interpreting and modelling soil spectra acquired from wet (non-dried) samples. As salinisation is a severe soil health problem, also the direct field observations of electric conductivity, salinity and epsilon are of interest. The probing of NPK and pH are more indicative, but as these chemical soil properties can be captured simultaneously with those of primary interest, they are also included in the database schema _penetrometer_.
+A main reason for applying soil penetrometers as part of AI4SH is that soil moisture is a required parameters for interpreting and modelling soil spectra acquired from wet (non-dried) samples. As salinisation is a severe soil health problem, also the direct field observations of electric conductivity, salinity and epsilon are of interest. The probing of NPK and pH are more indicative, but as these chemical soil properties can be captured simultaneously with those of primary interest, they are also included in the database schema **penetrometer**.
 
 As with spectrometers, each individual penetrometer has a slightly different response and thus needs an individual calibration. The table _penetrometer_ is for registering each individual instrument, the table _penetrometertypes_ for registering the physical quantities and units observed by each type of (brand+model) of penetrometer, and the table _penetrometercalib_ for storing the (optional) calibration settings.
 
-The meta data for each penetrometer observation is stored in the table _probemeta_. The table is prepared for accepting multiple observations for the each single sample (field: _proberepeat_). Observations can be done either in the field or using mixed (wet) samples, this is recorded in the field _subsample_  with a single letter (M, C, N, E, S, W for Mixed, Central, North, East, South and West). The alterantive options for peneteromter observations leads to a metadata table with a large number of primary keys (pk):
+The meta data for each penetrometer observation is stored in the table _probemeta_. The table is prepared for accepting multiple observations for each single sample (field: _proberepeat_). Observations can be done either in the field or using mixed (wet) samples, recorded in the field _subsample_  with a single letter (M, C, N, E, S, W for Mixed, Central, North, East, South and West). The alternative options for penetrometer observations leads to a metadata table with a large number of primary keys (pk):
 
 - penetrometerid (the probe)
 - sampleid (the sample event)
@@ -106,8 +106,8 @@ TABLE probemeta {
 TABLE penetrometerobs {
   obsid INTEGER [pk]
   quantity TEXT [pk]
-  obsmean REAL[]
-  obsstd REAL[]  
+  obsmean REAL
+  obsstd REAL  
 }
 
 REF: samples.sample_event.sampleid - probemeta.sampleid
@@ -124,6 +124,10 @@ REF: "public"."penetrometertypes"."model" - "public"."penetrometer"."model"
 REF: "public"."penetrometer"."penetrometerid" - "public"."penetrometercalib"."penetrometerid"
 
 Ref: "public"."probemeta"."obsid" - "public"."penetrometerobs"."obsid"
+
+Ref: "public"."penetrometertypes"."quantity" - "public"."penetrometerobs"."quantity"
+
+Ref: "public"."penetrometertypes"."quantity" - "public"."penetrometercalib"."quantity"
 ```
 
 ### Figure

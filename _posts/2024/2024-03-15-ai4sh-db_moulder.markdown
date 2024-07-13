@@ -9,7 +9,7 @@ tags:
   - schema
 image: ts-mdsl-rntwi_RNTWI_id_2001-2016_AS
 date: '2024-03-15 11:27'
-modified: '2024-06-03'
+modified: '2024-07-13'
 comments: true
 share: true
 
@@ -17,9 +17,9 @@ share: true
 
 ## Outline
 
-The schema _moulder_ only contains a single table, for recording the results of the [Moulder: Soil aggregates](https://play.google.com/store/apps/details?id=slaker.sydneyuni.au.com.slaker) open source app. Results from the older versions of the app, called [slakes](https://play.google.com/store/apps/details?id=slaker.sydneyuni.au.com.slaker) can also be registered in the schema.
+The schema **moulder** only contains a single table, for recording the results of the [Moulder: Soil aggregates](https://play.google.com/store/apps/details?id=slaker.sydneyuni.au.com.slaker) open source app. Results from the older versions of the app, called [slakes](https://play.google.com/store/apps/details?id=slaker.sydneyuni.au.com.slaker) can also be registered in the schema.
 
-The soil sampling, including extraction method, depth, classification, photos etc are recorded in the schema _samples_. The landscape (above ground) characteristics and the cultivation methods and its history are covered in the _sites_ schema.
+The soil sampling, including extraction method, depth, classification, photos etc., are recorded in the schema **samples**. The landscape (above ground) characteristics and the cultivation methods and its history are covered in the **sites**, **landscape** and **landsites** schemas.
 
 ## Moulder (slakes)
 
@@ -33,7 +33,7 @@ The app records the results in a folder under <span class='file'>documents</span
 ./documents/slakes/SoilHealthTestResultsExport_YYYY-MM-DD_HH-MM_SS
 ```
 
-Each experiment generate csv files with the results and also the images used for the analysis:
+Each experiment generate a set of csv files with the results and also the images used for the analysis:
 ```
 |____ImageData.csv
 |____Sample_hdd_YYYY-MM-DD_hh-mm_ss
@@ -89,7 +89,6 @@ sample-name,03/22/2024 09:55,0.48,None
 ```
 
 or in more readable tabular form:
-
 
 | Sample Name | Time stamp | Aggregate Stability Index | Error State |
 | "sample-name" | 03/22/2024 09:55 | 0.48 | None |

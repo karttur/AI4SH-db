@@ -8,8 +8,8 @@ tags:
   - setup
   - schema
 image: ts-mdsl-rntwi_RNTWI_id_2001-2016_AS
-date: '2024-03-09 11:27'
-modified: '2024-06-03'
+date: '2024-03-01 11:27'
+modified: '2024-07-13'
 comments: true
 share: true
 
@@ -17,7 +17,7 @@ share: true
 
 ## Outline
 
-The schema _users_ is only schematic, indicating its existence; registered users are linked to tables in all other schemas of the suggested database.
+The schema **users** is only schematic, indicating its existence; registered users are linked to tables in all other schemas of the suggested database.
 
 ## Idea and objective
 

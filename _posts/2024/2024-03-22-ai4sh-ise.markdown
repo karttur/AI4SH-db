@@ -1,0 +1,109 @@
+---
+layout: post
+title: "Schema: ise"
+categories: ai4sh-db
+excerpt: "AI4SH schema Ion Selective Electrode (ise)"
+tags:
+  - db
+  - setup
+  - schema
+image: ts-mdsl-rntwi_RNTWI_id_2001-2016_AS
+date: '2024-03-22 11:27'
+modified: '2024-07-13'
+comments: true
+share: true
+
+---
+
+## Outline
+
+The schema **ise** contains tables for in-field/in-kitchen/in-lab Ion Selective Electrode (ISE) analysis. For AI4SH, only pH will be analysed using ISE, but can be done both in-field and in-kitchen. As the ISE instruments used with AI4SH is an extension of one of the spectrometers to be tested, the ISE can be done using any of the three sample preparations also used for spectral analysis (schema.table: spectra.samplescan):
+
+- NO (no prep = in field analysis),
+- MX (mixed = in kitchen analysis of wet mixed subsamples), or
+- DS (dried & sieved = in kitchen/laboratory analysis).
+
+The schema **ise** is built along the same principles as the other schemas for laboratory derived soil properties, [wetlab](../ai4sh-db_wetlab/) and [edna](../ai4sh-db_edna/). The sampleid and userid are derived from other schemas and registered together with other metadata for each ISE analysis in the table _isemeta_. Each ISE analysis is given a unique (SERIAL) id, that is then used for linking to the results (table: _ise_).
+
+The actual ISE results are thus stored in the table _ise_.
+
+### DBML
+
+```
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Project project_name {
+  database_type: 'PostgreSQL'
+  Note: 'AI4SH schema for wet laboratory data'
+}
+
+Table users.user {
+  userid SERIAL
+}
+
+Table samples.sample_event {
+  sampleid SERIAL
+}
+
+Table iseprobe {
+  brand TEXT [pk]
+  model TEXT [pk]
+  quantity TEXT [pk]
+  unit TEXT
+  iseid SERIAL
+}
+
+TABLE labanalysismeta {
+  iseid INTEGER [pk]
+  sampleid INTEGER [pk]
+  topsoil Boolean [pk]
+  prepcode CHAR(2) [pk]
+  analysistimestamp timestamp
+  userid INTEGER
+  isecalib INTEGER
+  isealysisid SERIAL
+}
+// topsoil (true) represents 0-20 cm, subsoil (false) represents 20-50 cm.
+
+TABLE spectra.sampleprep {
+  prepcode CHAR(2) [pk]
+}
+// sampleprep alternatives: "NO", "MX", "DS"
+
+TABLE iseanalysisresults {
+  iseanalysisid INTEGER
+  quantity TEXT
+  value REAL
+}
+
+Table isecalibration {
+  iseid INTEGER [pk]
+  dt TIMESTAMP [pk]
+  refvalue REAL [DEFAULT: 1]
+  obsvaue REAL [DEFAULT: 1]
+  isecalib SERIAL
+}
+
+Ref: "samples"."sample_event"."sampleid" - "public"."labanalysismeta"."sampleid"
+
+Ref: "users"."user"."userid" - "public"."labanalysismeta"."userid"
+
+Ref: "public"."labanalysismeta"."prepcode" < "spectra"."sampleprep"."prepcode"
+
+Ref: "public"."iseprobe"."iseid" < "public"."labanalysismeta"."iseid"
+
+Ref: "public"."iseprobe"."iseid" < "public"."isecalibration"."iseid"
+
+Ref: "public"."labanalysismeta"."isecalib" < "public"."isecalibration"."isecalib"
+
+Ref: "public"."labanalysismeta"."isealysisid" - "public"."iseanalysisresults"."iseanalysisid"
+```
+
+### Figure
+
+<figure>
+<a href="../../images/DBML_schema-ise.png">
+<img src="../../images/DBML_schema-ise.png"></a>
+<figcaption>Enzyme DBML database structure</figcaption>
+</figure>

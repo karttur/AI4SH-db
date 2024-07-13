@@ -9,7 +9,7 @@ tags:
   - schema
 image: ts-mdsl-rntwi_RNTWI_id_2001-2016_AS
 date: '2024-03-18 11:27'
-modified: '2024-06-03'
+modified: '2024-07-13'
 comments: true
 share: true
 
@@ -17,7 +17,9 @@ share: true
 
 ## Outline
 
-The schema _wetlab_ contains tables for different laboratory analysis methods and results. The default soil properties included in the table are the physico-chemical quantities that are collected as part of the European Statistical Office (EUROSTAT) Land Use and Coverage Area frame Survey (LUCAS). The LUCAS sampling is structured in 5 different modules of which 3 are reflected in the AI4SH schema _wetlab_. The remaining 2 LUCAS modules are covered by the AI4SH schemas _macrofauna_ and _edna_, and _samples_, as outlined below.
+The schema **wetlab** contains tables for different laboratory analysis methods and results. The default soil properties included in the table are the physico-chemical quantities that are collected as part of the European Statistical Office (EUROSTAT) Land Use and Coverage Area frame Survey (LUCAS). The LUCAS sampling is structured in 5 different modules of which 3 are reflected in the AI4SH schema **wetlab**. The remaining 2 LUCAS modules are covered by the AI4SH schemas **macrofauna** and **edna**, and **samples**, as outlined below.
+
+___________________________________________________________
 
 | LUCAS module | AI4SH DB schema |
 | :-----------  | :----------- |
@@ -27,7 +29,11 @@ The schema _wetlab_ contains tables for different laboratory analysis methods an
 | 4 Field measurements | samples |
 | 5 Pollution | organic pollutants, pesticides residues |
 
+___________________________________________________________
+
 LUCAS module 1 Physico-chemical quantitative properties and analysis methods include:
+
+___________________________________________________________
 
 | quantity | abbr. | unit | ISO | OSSL (usda) |
 | :------- | :---- | :------- | :------- | :------- |
@@ -45,13 +51,15 @@ LUCAS module 1 Physico-chemical quantitative properties and analysis methods inc
 | Cation Exchange Capacity | CEC | cmol(+) kg<sup>-1</sup> | 11260:1994 | cec_usda.a723_cmolc.kg |
 | Electical conductivity | EC | mS m<sup>-1</sup>  | 11265:1994 | ec_usda.a364_ds.m |
 
+___________________________________________________________
+
 All properties that are to be laboratory analysed must be listed in the table _labanalysismethod_. The default methods to apply are the 13 physico-chemical methods listed in LUCAS module 1 (above).
 
 The table _methodtransfer_ is a support table for linking the ISO coded methods as defined by LUCAS and the USDA equivalent codes - as expressed in the OSSL online database. Additional tables defining other transfer functions might be required in the future.
 
 The sample to analyse is always the mixed sample from each sample event, where either only the topsoil (0-20 cm) or both the topsoil and subsoil (20-50 cm) are analysed. If both are analysed, two metadata records (table _labanalysismeta_) must be created for the same sample. The metadata should also include the name and contact of the (certified/centralised) laboratory that analysed the sample. The schema thus also contains a table for registering the laboratories used by AI4SH (_laboratory_).
 
-The actual laboratory results, for quantities and units as defined in the table _labanalysismethod_, are registered in the table _labanalysisresults_. As the analysis actually done varies for each pilot/site/sample point, the table is built up for registering single analysis results against the _analysismeta_ (lined using the common field _labanalysisid_).
+The actual laboratory results, for quantities and units as defined in the table _labanalysismethod_, are registered in the table _labanalysisresults_. As the analysis actually done varies for each pilot/site/sample point, the table is built up for registering single analysis results against the _analysismeta_ (linked using the common field _labanalysisid_).
 
 ### DBML
 
