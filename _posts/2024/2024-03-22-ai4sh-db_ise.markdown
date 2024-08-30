@@ -1,0 +1,133 @@
+---
+layout: post
+title: "Schema: ise"
+categories: ai4sh-db
+excerpt: "AI4SH schema Ion Selective Electrode (ise)"
+tags:
+  - db
+  - setup
+  - schema
+image: ts-mdsl-rntwi_RNTWI_id_2001-2016_AS
+date: '2024-03-22 11:27'
+modified: '2024-07-13'
+comments: true
+share: true
+
+---
+
+## Outline
+
+The schema **ise** contains tables for in-field/in-kitchen/in-lab Ion Selective Electrode (ISE) analysis. For AI4SH, only pH will be analysed using ISE, but can be done both in-field and in-kitchen. As the ISE instruments used with AI4SH is an extension of one of the spectrometers to be tested, the ISE can be done using any of the three sample preparations also used for spectral analysis (schema.table: spectra.samplescan):
+
+- NO (no prep = in field analysis),
+- MX (mixed = in kitchen analysis of wet mixed subsamples), or
+- DS (dried & sieved = in kitchen/laboratory analysis).
+
+The schema **ise** is built along the same principles as the other schemas for laboratory derived soil properties, [wetlab](../ai4sh-db_wetlab/) and [edna](../ai4sh-db_edna/). The sampleid and userid are derived from other schemas and registered together with other metadata for each ISE analysis in the table _isemeta_. Each ISE analysis is given a unique (SERIAL) id, that is then used for linking to the results (table: _ise_).
+
+The actual ISE results are thus stored in the table _ise_.
+
+### DBML
+
+```
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Project project_name {
+  database_type: 'PostgreSQL'
+  Note: 'AI4SH schema for infiltration test'
+}
+
+Table users.user {
+  userid SERIAL
+}
+
+Table samples.sample_event {
+  sampleid SERIAL
+}
+
+TABLE infiltrationmeta {
+  sampleid INTEGER [pk]
+  userid INTEGER
+  topsoil Boolean [pk, DEFAULT: TRUE]
+  repetition SMALLINT [pk, DEFAULT:1]
+  ringdiameter REAL
+  waterunit REAL
+  infiltrationid SERIAL
+}
+// ringdiameter in cm
+// waterunit of pouring vessel in ml
+// topsoil (true) represents 0-20 cm, subsoil (false) represents 20-50 cm.
+
+Table soilmoisture {
+  infiltrationid INTEGER [pk]
+  postwetting BOOLEAN [pk, NOT NULL]
+  soilmoisture REAL [NOT NULL]
+  smunit TEXT [DEFAULT: "vol vol-1"]
+  method TEXT [DEFAULT: "cylinder"]
+}
+// postwetting:
+// TRUE for post wetting conditions
+// FALSE for initial soil moisture conditions
+
+TABLE smmethod {
+  method TEXT
+}
+// e.g: cylinder100, cylinder250, penetrometer
+
+TABLE infiltrationrate {
+  infiltrationid INTEGER [pk]
+  infiltrationsequence SMALLINT [NOT NULL]
+  infiltrationtime REAL [NOT NULL]
+}
+// infiltrationtime in seconds
+
+Table hydraulicconductivity {
+  infiltrationid INTEGER [pk]
+  saturatedconductivity REAL
+}
+
+Table soilwaterretention {
+  infiltrationid INTEGER [pk]
+  hysteresiswetting BOOLEAN [DEFAULT: TRUE]
+  fieldcapacity REAL
+  wilitingpoint REAL
+}
+// The BEST methdod gives the wetting cycle soil water retention
+// If another method is used for drying cycle soil water retention
+// hysteresiswetting should be set to FALSE
+
+Table soilwaterretentioncurve {
+ infiltrationid INTEGER [pk]
+  hysteresiswetting BOOLEAN [DEFAULT: TRUE]
+  watercontent REAL
+  waterpotential REAL
+}
+// The BEST methdod gives the wetting cycle soil water retention
+// If another method is used for drying cycle soil water retention
+// hysteresiswetting should be set to FALSE
+
+Ref: "samples"."sample_event"."sampleid" - "public"."infiltrationmeta"."sampleid"
+
+Ref: "users"."user"."userid" - "public"."infiltrationmeta"."userid"
+
+Ref: "public"."infiltrationmeta"."infiltrationid" - "public"."soilwaterretention"."infiltrationid"
+
+Ref: "public"."soilwaterretention"."infiltrationid" - "public"."hydraulicconductivity"."infiltrationid"
+
+Ref: "public"."infiltrationmeta"."infiltrationid" - "public"."soilmoisture"."infiltrationid"
+
+Ref: "public"."soilmoisture"."infiltrationid" - "public"."infiltrationrate"."infiltrationid"
+
+Ref: "public"."infiltrationrate"."infiltrationid" - "public"."soilwaterretentioncurve"."infiltrationid"
+
+Ref: "public"."soilmoisture"."method" - "public"."smmethod"."method"
+```
+
+### Figure
+
+<figure>
+<a href="../../images/DBML_schema-ise.png">
+<img src="../../images/DBML_schema-ise.png"></a>
+<figcaption>Enzyme DBML database structure</figcaption>
+</figure>

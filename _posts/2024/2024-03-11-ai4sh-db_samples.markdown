@@ -102,6 +102,22 @@ Table sample_photo {
  photourl TEXT
 }
 
+Table soilmoisture {
+ sampleid INTEGER [pk]
+ topsoil BOOLEAN [pk]
+ repetition SMALLINT [pk, DEFAULT:1]
+ soilmoisture REAL
+ smunit TEXT [DEFAULT: vol vol-1]
+ method TEXT [DEFAULT: cylinder]
+}
+
+Table bulkdensity {
+ sampleid INTEGER [pk]
+ topsoil BOOLEAN [pk]
+ repetition SMALLINT [pk, DEFAULT:1]
+ density REAL
+}
+
 Table sampling {
   sampleid INTEGER [pk]
   soil_moisture_percent SMALLINT
