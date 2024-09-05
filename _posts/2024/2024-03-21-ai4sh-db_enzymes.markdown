@@ -28,6 +28,7 @@ The actual SEAR results are thus stored in the table _eea_, with each individual
 ```
 /// Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Project project_name {
   database_type: 'PostgreSQL'

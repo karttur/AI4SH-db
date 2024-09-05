@@ -60,7 +60,7 @@ In addition the overall community dissimilarity will be recorded as a metadata (
 
 The tables of the schema **edna** follows the principles of the schema [**wetlab**](../ai4sh-db_wetlab).
 
-The sample to analyse is always the mixed sample from each sample event, where either only the topsoil (0-20 cm) or both the topsoil and subsoil (20-50 cm) are analysed. If both are analysed, two metadata records (table _ednaanalysismeta_) must be created for the same sample. The metadata should also include the name and contact of the (certified/centralised) eDNA laboratory that analysed the sample, and the archive and accession code/id for the original sequence data.
+The sample to analyse is always the mixed sample from each sample event, where either only the topsoil (0-20 cm) or both the topsoil and subsoil (20-50 cm) are analysed. If both are analysed, two metadata records (table _ednaanalysismeta_) must be created for the same sampleevent. The metadata should also include the name and contact of the (certified/centralised) eDNA laboratory that analysed the sample, and the archive and accession code/id for the original sequence data.
 
 The schema thus also contains tables for registering the laboratories used by AI4SH (_laboratory_) and the nucleotide sequence archives (_nucleotidesequencearchive_) where the full sequence data are stored.
 
@@ -90,6 +90,7 @@ Both the taxa (along with richness and Shannon's diversity) and the functions ar
 ```
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Project project_name {
   database_type: 'PostgreSQL'

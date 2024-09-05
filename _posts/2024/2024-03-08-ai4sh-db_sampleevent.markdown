@@ -1,15 +1,15 @@
 ---
 layout: post
-title: "Schema: samples"
+title: "Schema: sample_event"
 categories: ai4sh-db
-excerpt: "AI4SH schema samples"
+excerpt: "AI4SH schema sample_event"
 tags:
   - db
   - setup
   - schema
 image: ts-mdsl-rntwi_RNTWI_id_2001-2016_AS
-date: '2024-03-11 11:27'
-modified: '2024-07-13'
+date: '2024-03-08 11:27'
+modified: '2024-07-08'
 comments: true
 share: true
 
@@ -17,9 +17,9 @@ share: true
 
 ## Outline
 
-The schema **samples** is meant to cover the actual soil sampling and the samples, but not the in-situ analysis results. The data to register in **samples** include sampling method, number and depth of sub-samples taken at each sample point and macro-characteristics of the directly (with human senses) observed (below ground) soil profiles. The landscape (above ground) characteristics, the cultivation methods and its history are registered in the _landscape_ and _landstate_ schemas. The analysis results from the in-situ method measurements are in separate schemas for each method.
+The schema **sample_event** covers metadata of soil sampling events. Actual soil observation and the results of the in-situ methods applied are registered in other schemas. The data to register in **sample_event** include responsible user, sampling method(s), and number and depth of sub-samples taken at each sample point.
 
-The _samples_ schema is linked to the schema for **users** (for registering the person[s] performing the sampling) and to the schema **sites**. From the **sites** schema each sampling event will relate to information on:
+The **sample_event** schema is linked to the schema for **users** (for registering the person[s] performing the sampling) and to the schema **sites**. From the **sites** schema each sampling event will relate to information on:
 
 - in-situ methods to apply (table _sites.point_insitu_methods_), and
 - point id (table _sites.samplepoint_) that links to both the site and the pilot.
@@ -33,13 +33,13 @@ Each sample point consists of 5 (five) excavation pits - one central and one in 
 - South (S), and
 - West (W).
 
-In the schema, the sampler should register which of these 5 pits (sub-points) where actually used for sampling of both the topsoil (0-20 cm) and the subsoil (20-50 cm). There should also be photos taken from the central point in approximately each of the main directions. Also this should be confirmed in the database, registering the name of the corresponding photo and its azimuth (that can deviaate and also allows additional photos to be registered).
+In the schema, the sampler should register which of these 5 pits (sub-points) where actually used for sampling of both the topsoil (0-20 cm) and the subsoil (20-50 cm).
 
 The excavation tool/method (table: _soil_excavataion_tool_) is in general the same for all types of in-situ analysis methods, except for the macrofauna. The macrofauna in-situ observation is either done from a monolith (see schema [macrofauna](../ai4sh-db_macrofauna)) or by pouring dissolved mustard powder on the soil surface and capturing the earthworms that crawl up. Thus the excavation of any macrofauna must be registered separately (support table for tools/methods: _macrofauna_excavataion_tool_).
 
 ## Idea and objective
 
-The objective of the the **samples** schema is to hold the basic information on each sample event per sample point. It is in a way the intermediate link between the schema **sites** holding information related to the sample points (sites and pilots) and the in-situ analysis results derived from the different methods - where each method results are registered in a separate schema.
+The objective of the the **sample_event** schema is to hold the meta-data on each sample event per sample point. It is in a way the intermediate link between the schema **sites** holding information related to the sample points (sites and pilots) and the in-situ analysis results derived from the different methods - where each method results are registered in a separate schema.
 
 As with other schemas and tables in this proposed database, each sample event is registered with i) the user (userid) who is performing this particular sampling, and ii) the sample point (pointid) where it is happening. When registering the sampling event, it is given its own (SERIAL) sampleid. The sampling event id is then used as the link to the analysis results.
 
@@ -52,10 +52,11 @@ The schema is built up after the field and sampling protocols developed with AI4
 ```
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Project project_name {
   database_type: 'PostgreSQL'
-  Note: 'AI4SH schema for samples'
+  Note: 'AI4SH schema for sample_event'
 }
 
 Table users.user {
@@ -73,11 +74,14 @@ Table sites.insitu_methods {
   macrofauna BOOLEAN
   microbiometer BOOLEAN
   moulder BOOLEAN
+  fieldobs BOOLEAN
   soil_spectra_NO BOOLEAN
   soil_spectra_MX BOOLEAN
   soil_spectra_DS BOOLEAN
   penetrometer_NPKPHCTH BOOLEAN
+  enzymes BOOLEAN
   ise_pH BOOLEAN
+  infiltration BOOLEAN
 }
 
 Table sample_event {
@@ -85,37 +89,7 @@ Table sample_event {
  sampledatetime timestamp [pk]
  sampleid SERIAL
  userid INTEGER
- soil_class_code char[5]
  description TEXT
-}
-
-Table soil_class {
- soil_class_code char[5] [pk]
- soil_class TEXT
- description TEXT
-}
-
-Table sample_photo {
- sampleid INTEGER [pk]
- azimuth SMALLINT [pk]
- photoid TEXT
- photourl TEXT
-}
-
-Table soilmoisture {
- sampleid INTEGER [pk]
- topsoil BOOLEAN [pk]
- repetition SMALLINT [pk, DEFAULT:1]
- soilmoisture REAL
- smunit TEXT [DEFAULT: vol vol-1]
- method TEXT [DEFAULT: cylinder]
-}
-
-Table bulkdensity {
- sampleid INTEGER [pk]
- topsoil BOOLEAN [pk]
- repetition SMALLINT [pk, DEFAULT:1]
- density REAL
 }
 
 Table sampling {
@@ -141,11 +115,6 @@ Table sampling {
   macrofauna_excavation_tool varchar(16)
 }
 
-Table soil_moisture_nominal {
-  soil_moisture_nominal varchar(8)
-}
-// soil_moisture_nominal: "too wet", "too dry", "optimal"
-
 Table soil_excavation_tool {
   soil_excavation_tool varchar(8)
 }
@@ -164,10 +133,6 @@ Ref: "public"."sample_event"."sampleid" - "public"."sampling"."sampleid"
 Ref: "public"."sample_event"."soil_class_code" - "public"."soil_class"."soil_class_code"
 
 Ref: "public"."sampling"."soil_excavation_tool" - "public"."soil_excavation_tool"."soil_excavation_tool"
-
-Ref: "public"."sample_event"."sampleid" - "public"."sample_photo"."sampleid"
-
-Ref: "public"."sampling"."soil_moisture_nominal" - "public"."soil_moisture_nominal"."soil_moisture_nominal"
 
 Ref: "public"."sample_event"."pointid" - "sites"."samplepoint"."pointid"
 

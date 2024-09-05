@@ -25,7 +25,7 @@ ___________________________________________________________
 | :-----------  | :----------- |
 | 1 Physico-chemical properties | wetlab |
 | 2 Soil biodiversity | macrofauna/edna |
-| 3 Bulk density | wetlab |
+| 3 Bulk density | samples |
 | 4 Field measurements | samples |
 | 5 Pollution | organic pollutants, pesticides residues |
 
@@ -90,7 +90,7 @@ All properties that are to be laboratory analysed must be listed in the table _l
 
 The table _methodtransfer_ is a support table for linking the ISO coded methods as defined by LUCAS to any other coding system. By default the USDA coding system as expressed in the Open Soil Spectral Library (OSSL) should be added. But also other, country specific, standards can be entered.
 
-The sample to analyse is always the mixed sample from each sample event, where either only the topsoil (0-20 cm) or both the topsoil and subsoil (20-50 cm) are analysed. If both are analysed, two metadata records (table _labanalysismeta_) must be created for the same sample. The metadata should also include the name and contact of the (certified/centralised) laboratory that analysed the sample. The schema thus also contains a table for registering the laboratories used by AI4SH (_laboratory_).
+The sample to analyse is always the mixed sample from each sample event, where either only the topsoil (0-20 cm) or both the topsoil and subsoil (20-50 cm) are analysed. If both are analysed, two metadata records (table _labanalysismeta_) must be created for the same sampleevent. The metadata should also include the name and contact of the (certified/centralised) laboratory that analysed the sampleevent. The schema thus also contains a table for registering the laboratories used by AI4SH (_laboratory_).
 
 The actual laboratory results, for quantities and units as defined in the table _labanalysismethod_, are registered in the table _labanalysisresults_. As the analysis actually done varies for each pilot/site/sample point, the table is built up for registering single analysis results against the _analysismeta_ (linked using the common field _labanalysisid_).
 
@@ -99,6 +99,7 @@ The actual laboratory results, for quantities and units as defined in the table 
 ```
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Project project_name {
   database_type: 'PostgreSQL'

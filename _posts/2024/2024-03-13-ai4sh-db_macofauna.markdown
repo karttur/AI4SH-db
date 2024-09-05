@@ -55,6 +55,7 @@ To allow the comparison of manual, semi-automated and fully automated macrofauna
 ```
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Project project_name {
   database_type: 'PostgreSQL'

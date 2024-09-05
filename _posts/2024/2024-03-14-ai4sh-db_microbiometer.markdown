@@ -33,6 +33,7 @@ MicroBiometerTM  expresses test results as a number between 0 and 100.
 ```
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Project project_name {
   database_type: 'PostgreSQL'

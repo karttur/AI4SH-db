@@ -2,13 +2,13 @@
 layout: post
 title: "Schema: weather"
 categories: ai4sh-db
-excerpt: "AI4SH schema for weather conditions just before and during sampling."
+excerpt: "AI4SH schema for weather conditions just before and during sample events."
 tags:
   - db
   - setup
   - schema
 image: ts-mdsl-rntwi_RNTWI_id_2001-2016_AS
-date: '2024-03-10 11:27'
+date: '2024-03-12 11:27'
 modified: '2024-07-13'
 comments: true
 share: true
@@ -30,6 +30,7 @@ The weather and related ground conditions can vary strongly over both time and s
 ```
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Project project_name {
   database_type: 'PostgreSQL'

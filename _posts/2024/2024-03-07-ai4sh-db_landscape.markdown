@@ -19,17 +19,18 @@ share: true
 
 The **landscape** schema contains the tables that describe the more constant above ground characteristics around each sample point. The landscape description in the database should represent an area of approximately 25 m<sup>2</sup> centred around the central pit of each sample point.
 
-The tables _major_landform_ and _hillslope_position_ are catalogues of accepted different landscape elements and positions. Thus the definition of both major landform and hillslope position can only be done by selecting one item from these predefined catalogues.
+The tables _major_landform_ and _hillslope_position_ are catalogues of predefined different landscape elements and positions. Major landform and hillslope position can only be registered in the database by selecting one item from these predefined catalogues.
 
 ## Idea and objective
 
-Permanent landscape characteristics around each sample-points are regarded as static over the duration of the AI4SH project. The data in the **landscape** schema is thus not associated with any particular sampling event.
+Permanent landscape characteristics around each sample-points are regarded as static over the duration of the AI4SH project. The data in the **landscape** schema is thus not associated with any particular sampling event. One possibility is to identify landscape elements and postions from remote sensing and other spatial data and just let the user confirm, or manually alter, the proposed classification.
 
 ### DBML
 
 ```
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Project project_name {
   database_type: 'PostgreSQL'

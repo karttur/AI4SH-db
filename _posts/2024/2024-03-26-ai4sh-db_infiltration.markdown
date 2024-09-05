@@ -34,6 +34,7 @@ The texture data is assumed to be the same before and after the infiltration tes
 ```
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Project project_name {
   database_type: 'PostgreSQL'
@@ -134,5 +135,5 @@ Ref: "public"."soilmoisture"."method" - "public"."smmethod"."method"
 <figure>
 <a href="../../images/DBML_schema-infiltration.png">
 <img src="../../images/DBML_schema-infiltration.png"></a>
-<figcaption>Infiltration DBML database structure. The lower row of tables are optional - third party solutions are possible to use and then only the top rows filled. The value of the data will, however, decrease significantly if that route is chosen.</figcaption>
+<figcaption>Infiltration DBML database structure. The lower row of tables are optional - third party solutions are possible to use and then only the top rows need to be filled. The value of the data will, however, decrease significantly if that route is chosen.</figcaption>
 </figure>

@@ -56,6 +56,7 @@ The schema **spectra** is written for registering unique wavelengths with each i
 ```
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Table users.user {
   userid SERIAL

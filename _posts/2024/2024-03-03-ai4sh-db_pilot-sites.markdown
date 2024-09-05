@@ -24,7 +24,7 @@ The schema **sites** is intended for registering the AI4SH pilots, sites and sam
 
 Each sample point (child) must belong to a site (parent) that must belong to a pilot (grand parent). Note that some pilots will only have a single site, whereas others might have 10, or even more.
 
-The table _point_insitu_methods_ is intended for defining which in-situ observations that are supposed to be done at each sample point. Thus all columns in this table, except the pointid, are boolean variables. The table _point_insitu_methods_ should ideally be filled before any field work commence. Table 1 lists all the in-situ methods that are considered and available as part of WP4 of AI4SH.
+The table _point_insitu_methods_ is intended for defining the default in-situ observations that are supposed to be done at each sample point. Thus all columns in this table, except the pointid, are boolean variables. The table _point_insitu_methods_ should ideally be filled before any field work commence. Table 1 lists all the in-situ methods that are considered and available as part of WP4 of AI4SH.
 
 _Table 1. In-situ data parameters and methods_
 
@@ -37,12 +37,15 @@ ___________________________________________________________
 | macrofauna | soil biodiversity | monolith excavation | in-field<sup>2,3</sup> (specialist, citizen scientist) |
 | microbiometer | soil metabolism | commercial kit | in-kitchen<sup>4</sup> (citizen scientist) |
 | moulder | aggregate stability | mobile phone app | in-kitchen<sup>4</sup> (citizen scientist) |
+| fieldobs | soil density & moisture | soil cylinder | in-field<sup>4</sup> (citizen scientist) |
 | soil_spectra_NO | soil constituents | spectroscopy | in-field<sup>3</sup> (citizen scientist) |
 | soil_spectra_MX | soil constituents | spectroscopy | in-kitchen<sup>4</sup> (citizen scientist) |
 | soil_spectra_DS | soil constituents | spectroscopy | in-lab<sup>1,3</sup> (specialist, citizen scientist)|
 | enzymatic activity | extracellular enzymatic activity | SEAR<sup>5</sup> | in-kitchen<sup>4</sup> (citizen scientist) |
 | penetrometer | soil moisture, salinity & nutrients | electronic | in-field<sup>3</sup> (citizen scientist) |
 | pH | soil pH | ISE<sup>6</sup> | in-field<sup>3</sup> (citizen scientist) |
+| infiltration | hydraulics | BEST<sup>7</sup> | in-field<sup>3</sup> (citizen scientist) |
+
 
 ___________________________________________________________
 
@@ -52,6 +55,7 @@ ___________________________________________________________
 <sup>4</sup> = <span style="font-size:0.85em;">Field work includes sampling and kitchen analysis that can be done by citizen scientist.</span><br>
 <sup>5</sup> = <span style="font-size:0.85em;">Soil Enzymatic Activity Reader - see schema on [enzymes](../ai4sh-db_enzymes).</span><br>
 <sup>6</sup> = <span style="font-size:0.85em;">Ion Selective Electrode - see schema on [ise](../ai4sh-db_ise).</span><br>
+<sup>7</sup> = <span style="font-size:0.85em;">Beerkan Estimation of Soil Transfer parameters [infiltration](../ai4sh-db_infiltration).</span><br>
 
 ## Idea and objective
 
@@ -64,6 +68,7 @@ The registering of the pilots, field/farms and sample points requires recognisin
 ```
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Project project_name {
   database_type: 'PostgreSQL'
@@ -117,11 +122,14 @@ Table point_insitu_methods {
   macrofauna BOOLEAN
   microbiometer BOOLEAN
   moulder BOOLEAN
+  fieldobs BOOLEAN
   soil_spectra_NO BOOLEAN
   soil_spectra_MX BOOLEAN
   soil_spectra_DS BOOLEAN
   penetrometer_NPKPHCTH BOOLEAN
+  enzymes BOOLEAN
   ise_pH BOOLEAN
+  infiltration BOOLEAN
 }
 
 Ref: "users"."user"."userid" - "public"."pilot"."contact_person"

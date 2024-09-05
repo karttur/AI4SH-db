@@ -17,17 +17,18 @@ share: true
 
 ## Outline
 
-The schema **users** is only schematic, indicating its existence; registered users are linked to tables in all other schemas of the suggested database.
+The schema **users** is only schematically illustrated here, indicating its existence; registered users are linked to tables in all other schemas of the suggested database.
 
 ## Idea and objective
 
-The idea is that all the researchers, field workers and laboratory staff etc., involved should register as _users_ and get assigned a unique id. The unique id is assigned using the postgreSQL data type SERIAL - an automatically incremented integer number with each added database record. For each entry in the database the person who did the work and is responsible (which can differ) should then be inserted using the userid as link.
+The idea is that all the researchers, field workers and laboratory staff etc., involved should register as _users_ and get assigned a unique id. The unique id is assigned using the postgreSQL data type SERIAL - an automatically incremented integer number with each added database record. For each entry in the database the person who did the work and is responsible (which can differ) should then be inserted using the userid with a link to this schema that gives the contact details.
 
 ### DBML
 
 ```
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Project project_name {
   database_type: 'PostgreSQL'

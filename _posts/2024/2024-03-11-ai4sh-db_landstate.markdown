@@ -8,7 +8,7 @@ tags:
   - setup
   - schema
 image: ts-mdsl-rntwi_RNTWI_id_2001-2016_AS
-date: '2024-03-08 11:27'
+date: '2024-03-11 11:27'
 modified: '2024-07-13'
 comments: true
 share: true
@@ -17,7 +17,7 @@ share: true
 
 ## Outline
 
-The **landstate** schema contains the tables that describe land use/management, crop and erosion states for each sample point at the time of each sampling event. It can also be used for describing historical crop management and yield. The state description in the database should represent an area of approximately 25 m<sup>2</sup> centred around the central pit of each sample point. Most observations requires visual (human) in-field observation. The observations are linked to each sample point (schema.table: _sites.pointid_), and via the observation date also to a particular sample event (schema.table: _sample.sampleid_).
+The **landstate** schema contains the tables that describe land use/management, crop and erosion states for each sample point at the time of each sampling event. It can also be used for describing historical crop management and yield. The state description in the database should represent an area of approximately 25 m<sup>2</sup> centred around the central pit of each sample point. Most observations require visual (human) in-field observation. The observations are linked to each sample point (schema.table: _sites.pointid_), and via the observation date also to a particular sample event (schema.table: _sampleevent.sampleid_).
 
 The land use/cover is registered using three Boolean variables (protected, managed and organic_farming) plus selecting a single dominant land use from a predefined catalog, _dominant_land_use_ (see DBML code below for alternatives). In addition to dominant land use, the presence of different vegetation groups should be recorded as boolean variables. The stage of the main crop is also registered, again only allowing stages predefined in the support table (catalog) _crop_growth_stage_code_ - see below in the DBML code. Also any signs of erosion and erosions conservation measures (predefined catalogue: _erosions_censervation_measure_code_) should be recorded.
 
@@ -35,13 +35,14 @@ For interpreting and modelling some of the in-situ information retrieved, the de
 
 ## Idea and objective
 
-The landstate properties vary over time and with growing season. Most of the observations require on-site visual inspection. Most of the attributes are fairly easy to observe and register, with the filling of the database largely depending on predefined catalogues and lists to chose from. Historical attributes are not mandatory.
+The landstate properties vary over time and with growing season. Most of the observations require on-site visual inspection. Most of the attributes are fairly easy to observe and register, with the filling of the database largely depending on predefined catalogues and lists to chose from. Historical attributes require obtained site specific data from the land manager and might be both difficult and time consuming to capture. Historical data are not mandatory.
 
 ### DBML
 
 ```
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Project project_name {
   database_type: 'PostgreSQL'

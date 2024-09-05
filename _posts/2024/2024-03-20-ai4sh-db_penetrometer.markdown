@@ -55,6 +55,7 @@ The actual observation data is saved in the table _penetrometerobs_. The link be
 ```
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
+// Tool: https://dbdiagram.io/d
 
 Project project_name {
   database_type: 'PostgreSQL'
